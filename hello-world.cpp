@@ -26,8 +26,8 @@ int main(int argc, char *argv[])
   }
 
   // load an image  
-  img=cvLoadImage("foo.jpg",1);
-/*
+  img=cvLoadImage(argv[1]);
+
   if(!img){
     printf("Could not load image file: %s\n",argv[1]);
     exit(0);
@@ -58,5 +58,5 @@ int main(int argc, char *argv[])
   // release the image
   cvReleaseImage(&img );
   return 0;
-*/
+
 }

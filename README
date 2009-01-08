@@ -1,1 +1,27 @@
 Learning OpenCV and need a place to play.
+
+Ok, so how do you compile. 
+
+Trying this:
+gcc `pkg-config --cflags --libs opencv` -o foo hello-world.cpp
+
+Undefined symbols:
+  "___gxx_personality_v0", referenced from:
+      ___gxx_personality_v0$non_lazy_ptr in ccyR0e4T.o
+ld: symbol(s) not found
+collect2: ld returned 1 exit status
+dao:opencv-samples adamb$
+
+Wrong compiler.  User g++ instead.
+
+ g++ `pkg-config --cflags --libs opencv` -o hello-world hello-world.cpp 
+
+Copied a test image in and I can now run it like this:
+./hello-world test.png
+
+Seems to work with both a png and a jpg file.  
+
+The jpg is too big for the screen, so it's difficult to see.
+
+
+
