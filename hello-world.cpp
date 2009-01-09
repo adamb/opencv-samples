@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
 
   // invert the image
   for(i=0;i<height;i++) for(j=0;j<width;j++) for(k=0;k<channels;k++)
-    data[i*step+j*channels+k]=255-data[i*step+j*channels+k];
+    data[i*step+j*channels+k] = ~data[i*step+j*channels+k];
 
   // show the image
   cvShowImage("mainWin", img );
