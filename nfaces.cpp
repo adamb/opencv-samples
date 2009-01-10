@@ -14,10 +14,54 @@
 
 int main(int argc, char *argv[])
 {
-  IplImage* img = 0; 
-  int height,width,step,channels;
-  uchar *data;
-  int i,j,k;
+  IplImage* image = 0; 
+
+  int optlen = strlen("--cascade=");
+  const char* input_name;
+
+  if( argc > 1 && strncmp( argv[1], "--cascade=", optlen ) == 0 )
+  {
+      cascade_name = argv[1] + optlen;
+      input_name = argc > 2 ? argv[2] : 0;
+  }	
+  else
+  {
+      cascade_name = "/opt/local/var/macports/software/opencv/1.0.0_0/opt/local/share/opencv/haarcascades/haarcascade_frontalface_alt.xml";
+      input_name = argc > 1 ? argv[1] : 0;
+  }
+
+  if( !input_name )
+  {
+      fprintf( stderr, "ERROR: Need a valid filename\n" );
+      fprintf( stderr,
+      "Usage: facedetect --cascade=\"<cascade_path>\" [filename]\n" );
+      return -1;
+  }
+
+  cascade = (CvHaarClassifierCascade*)cvLoad( cascade_name, 0, 0, 0 );
+  
+  if( !cascade )
+  {
+      fprintf( stderr, "ERROR: Could not load classifier cascade\n" );
+      fprintf( stderr,
+      "Usage: facedetect --cascade=\"<cascade_path>\" [filename]\n" );
+      return -1;
+  }
+  storage = cvCreateMemStorage(0);
+  
+  // Load the image
+  image = cvLoadImage( input_name , 1); 
+  if (!image) {
+	printf("Could not load image file: %s\n", input_name);
+	exit(0);
+  }
+	
+
+  if( argc > 1 && strncmp( argv[1], "--cascade=", optlen ) == 0 )
+  {
+      cascade_name = argv[1] + optlen;
+      input_name = argc > 2 ? argv[2] : 0;
+  }
 
   if(argc<2){
     printf("Usage: nfaces <image-file-name>\n");
