@@ -28,8 +28,9 @@ const char* cascade_name =
 
 int main( int argc, char** argv )
 {
-    CvCapture* capture = 0;
-    IplImage *frame, *frame_copy = 0;
+
+	IplImage *image = 0;
+	
     int optlen = strlen("--cascade=");
     const char* input_name;
 
@@ -50,82 +51,33 @@ int main( int argc, char** argv )
     {
         fprintf( stderr, "ERROR: Could not load classifier cascade\n" );
         fprintf( stderr,
-        "Usage: facedetect --cascade=\"<cascade_path>\" [filename|camera_index]\n" );
+        "Usage: facedetect --cascade=\"<cascade_path>\" [filename]\n" );
         return -1;
     }
     storage = cvCreateMemStorage(0);
     
-    if( !input_name || (isdigit(input_name[0]) && input_name[1] == '\0') )
-        capture = cvCaptureFromCAM( !input_name ? 0 : input_name[0] - '0' );
-    else
-        capture = cvCaptureFromAVI( input_name ); 
+    if( !input_name )
+    {
+        fprintf( stderr, "ERROR: Need a valid filename\n" );
+        fprintf( stderr,
+        "Usage: facedetect --cascade=\"<cascade_path>\" [filename]\n" );
+        return -1;
+    }
 
+    image = cvLoadImage( input_name , 1); 
+
+	if (!image) {
+		printf("Could not load image file: %s\n", input_name);
+		exit(0);
+	}
+	
     cvNamedWindow( "result", 1 );
 
-    if( capture )
-    {
-        for(;;)
-        {
-            if( !cvGrabFrame( capture ))
-                break;
-            frame = cvRetrieveFrame( capture );
-            if( !frame )
-                break;
-            if( !frame_copy )
-                frame_copy = cvCreateImage( cvSize(frame->width,frame->height),
-                                            IPL_DEPTH_8U, frame->nChannels );
-            if( frame->origin == IPL_ORIGIN_TL )
-                cvCopy( frame, frame_copy, 0 );
-            else
-                cvFlip( frame, frame_copy, 0 );
-            
-            detect_and_draw( frame_copy );
+	detect_and_draw( image );
 
-            if( cvWaitKey( 10 ) >= 0 )
-                break;
-        }
+	cvWaitKey( 0 );
 
-        cvReleaseImage( &frame_copy );
-        cvReleaseCapture( &capture );
-    }
-    else
-    {
-        const char* filename = input_name ? input_name : (char*)"lena.jpg";
-        IplImage* image = cvLoadImage( filename, 1 );
-
-        if( image )
-        {
-            detect_and_draw( image );
-            cvWaitKey(0);
-            cvReleaseImage( &image );
-        }
-        else
-        {
-            /* assume it is a text file containing the
-               list of the image filenames to be processed - one per line */
-            FILE* f = fopen( filename, "rt" );
-            if( f )
-            {
-                char buf[1000+1];
-                while( fgets( buf, 1000, f ) )
-                {
-                    int len = (int)strlen(buf);
-                    while( len > 0 && isspace(buf[len-1]) )
-                        len--;
-                    buf[len] = '\0';
-                    image = cvLoadImage( buf, 1 );
-                    if( image )
-                    {
-                        detect_and_draw( image );
-                        cvWaitKey(0);
-                        cvReleaseImage( &image );
-                    }
-                }
-                fclose(f);
-            }
-        }
-
-    }
+    cvReleaseImage( &image );
     
     cvDestroyWindow("result");
 
