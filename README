@@ -1,4 +1,6 @@
+
 Learning OpenCV and need a place to play.
+
 
 Ok, so how do you compile. 
 
@@ -23,5 +25,14 @@ Seems to work with both a png and a jpg file.
 
 The jpg is too big for the screen, so it's difficult to see.
 
+2009-01-10
 
+Trying Facedetect
+
+ gcc `pkg-config opencv --cflags --libs` facedetect.c -o facedetect
+
+./facedetect --cascade="/opt/local/var/macports/software/opencv/1.0.0_0/opt/local/share/opencv/haarcascades/haarcascade_frontalface_alt.xml" jared.jpg 
+
+Q: Why does it keep running over and over?
+A: Because it's using cvCaptureFromAVI() and I'm giving it a JPEG.  It just keeps reading the image over and over again.  I suppose this is ok.
 
