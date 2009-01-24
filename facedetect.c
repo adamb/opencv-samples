@@ -41,7 +41,7 @@ int main( int argc, char** argv )
     }
     else
     {
-        cascade_name = "../../data/haarcascades/haarcascade_frontalface_alt2.xml";
+        cascade_name = "/opt/local/var/macports/software/opencv/1.0.0_0/opt/local/share/opencv/haarcascades/haarcascade_frontalface_alt.xml";
         input_name = argc > 1 ? argv[1] : 0;
     }
 
